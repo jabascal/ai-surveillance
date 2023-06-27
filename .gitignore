@@ -1,0 +1,10 @@
+*.cpython-39.pyc
+*.pyc
+__pycache__/
+*.swp
+images/
+models/
+data/
+venv/
+figures2/
+results/

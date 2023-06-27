@@ -1,0 +1,60 @@
+# Parameters data acquisition
+acquisition:
+  mode_video: Camera # Video, Camera
+  cam_id: 0 # Camera id (if mode_video = Camera); otherwise, video path (if mode_video = Video)
+  num_frames: None # Number of frames to acquire; None = infinite
+  fps: 30 # Frames per second
+  #resolution: (640, 480) # Resolution of the frames
+  #crop: None # Crop the frames; None = no crop
+  #crop_size: (100, 100) # Crop size
+  #crop_position: (0, 0) # Crop position
+  downsample: False # Downsample the frames
+  downsample_rate: 2 # Downsample rate
+  flip: False # Flip the frames
+  rotate: False # Rotate the frames
+  rotate_angle: 0 # Rotate angle  
+  mode_contrast: False # Increase the contrast of the frames
+  contrast_gamma: 0.5 # Contrast gamma
+  black_and_white: False # Convert the frames to black and white
+  mode_ref_mean: True # Reference frame; False = no reference frame
+  num_frames_mean: 100 # Number of frames to calculate the reference frame  
+
+# Object detection: Default model yolov8
+detection: 
+  model: yolov8 # yolov8, yolov8-tiny, yolov8-416, yolov8-tiny-416
+  model_format: pb # tflite, pb
+  path_model: models/yolov8n_saved_model # Path to the weights: yolov8n_float32_tflite
+  #cfg: cfg/yolov8.cfg # Path to the cfg
+  path_labels: data/coco-labels/coco-labels-paper.txt # Path to the names
+  #conf_thres: 0.5 # Confidence threshold
+  #nms_thres: 0.5 # Non-maximum suppression threshold
+  classes_searched: 
+    - person # Classes to search
+    - 'Male person'
+    - 'Female person'
+    - "Child"
+    - "Woman"
+    - "Man" # IMAGENET
+    - "Person"
+    - "Human face"
+    - "Human hand"
+    - "Human head"
+    - "Animal"
+    - "Bird"
+    - "Dog" # COCO
+  num_frames_freq: 1 # Number of frames to skip between detections
+  score_thres: 0.5 # Score threshold
+
+# Checkpoints: Saving images and videos
+checkpoints:
+  save_images: True # Save images
+  path_save_images: results # Path to save the images; None = no save
+  name_save: ai_surv # Name of the images
+  save_videos: False # Save videos
+  path_save_video: None # Path to save the videos; None = no save
+  #save_videos_fps: 30 # Frames per second of the videos
+  #save_videos_format: mp4v # Format of the videos
+
+# Display: Displaying images and videos
+display:
+  mode_display: True # Display images and videos
