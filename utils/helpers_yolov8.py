@@ -32,11 +32,11 @@ def detection_object_yolov8(detector, frame, count_frames, classes_searched,
     return results, classes_positive
 
 
-def model_load_yolov8(module_handle):
+def model_load_yolov8(module_handle, task):
     # Load YOLO model
     time_start_load = time.time()
     # downloads and decompresses a SavedModel 
     print(f"Loading model {module_handle}")
-    model = YOLO(module_handle) 
+    model = YOLO(module_handle, task=task) 
     print(f"... loaded in {int(time.time()-time_start_load)} s")
     return model    

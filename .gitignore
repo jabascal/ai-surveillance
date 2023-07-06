@@ -8,3 +8,5 @@ data/
 venv/
 figures2/
 results/
+extras/
+*.ipynb

@@ -1,9 +1,20 @@
 # ai-surveillance
 Surveillance tool that runs an object detector model 
-in order to take actions when specified classes (eg. "person", "dog") are detected with high score. 
+in order to take actions. 
+Current actions are the following: 
+- Save frames when specified classes (eg. "person", "dog") are detected with high score
 
 It uses opencv-python to capture images and for display. 
-Current object detector is YOLOv8. 
+
+Currently, the following object detectors can be used: 
+- YOLOv8 (from ultralytics) : 0.3s/frame 
+- YOLOv3 (keras model, obtained online) : 5s/frame
+- MobiletNetv2 (tf hub) : 0.1-0.2s/frame
+- EfficientDet-Lite4 (tf hub) : 0.3-0.4s/frame
+
+(Note: detection times for a frame of (480, 640, 3) and effective times, including visualization and writing positive results.)
+
+Detection boxes, curretly, only shown for yolov8. 
 
 ## Installation
 
@@ -26,7 +37,22 @@ Install ultralytics and other requirements. In Linux:
     pip install -r requirements.txt
 ```
 
+### For tf object detection
+For mobilenet_v2, EfficientDet, YOLOv3
+
+```
+    cd ai-surveillance
+    git clone 
+    mkdir venv
+    cd venv
+    python -m venv tf
+    source venv/tf/bin/activate
+    pip install -r requirements_tf.txt
+```
+
 ## Usage with docker
+Docker image for YOLOv8 detector built from Ultralytics Image.
+
 With Docker installed: 
 
 ```
