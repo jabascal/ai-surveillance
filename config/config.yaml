@@ -20,6 +20,26 @@ acquisition:
   num_frames_mean: 100 # Number of frames to calculate the reference frame  
 
 # Object detection:
+detection: 
+  score_thres: 0.2 # Score threshold: small value suffices as we are searching specific classes
+  classes_searched: 
+    - person # Classes to search
+    - 'Male person'
+    - 'Female person'
+    - "Child"
+    - "Woman"
+    - "Man" # IMAGENET
+    - "Person"
+    - "Human face"
+    - "Human hand"
+    - "Human head"
+    - "Animal"
+    - "Bird"
+    - "Dog" # COCO
+  num_frames_freq: 15 # Number of frames to skip between detections (reduce processing + writting output)
+  task: detect
+
+# Uncomment to choose model configuration!
 
 # Default model:
 # yolov8
@@ -32,16 +52,6 @@ acquisition:
   # signatures:  
   # output_keys: 
   # score_thres: 0.5 
-
-# mobilenet_v2:
-#   model: mobilenet_v2
-#   model_format: hub 
-#   path_model: https://tfhub.dev/google/openimages_v4/ssd/mobilenet_v2/1 
-#   set TFHUB_CACHE_DIR to locate download; /tmp/tfhub_modules
-#   path_labels: openimages_v4 # not relevant
-#   score_thres: 0.4 
-#   require_labels: False
-#   dtype: tf.float32
 
 # yolov3_tf:
   # model: yolov3 
@@ -67,29 +77,28 @@ acquisition:
 
 # mobilenet_v2:
 #   0.1-0.2s per frame
-  # model: mobilenet_v2 
-  # model_format: hub 
-  # path_model: https://tfhub.dev/google/openimages_v4/ssd/mobilenet_v2/1  
-  # path_labels: data/coco-labels/coco-labels-paper.txt    
-  # require_labels: False 
-  # dtype: tf.float32 
-  # signatures: default 
-  # output_keys: 
-  #   detection_boxes: detection_boxes
-  #   detection_scores: detection_scores
-  #   detection_classes: detection_class_labels # int
-  #   detection_class_entities: detection_class_entities # string
-  #   num_detections: 
+  model: mobilenet_v2 
+  model_format: hub 
+  path_model: https://tfhub.dev/google/openimages_v4/ssd/mobilenet_v2/1  
+  path_labels: data/coco-labels/coco-labels-paper.txt    
+  require_labels: False 
+  dtype: tf.float32 
+  signatures: default 
+  output_keys: 
+    detection_boxes: detection_boxes
+    detection_scores: detection_scores
+    detection_classes: detection_class_labels # int
+    detection_class_entities: detection_class_entities # string
+    num_detections: 
 
 # efficientdet_lite4:
 # 0.3-0.4s
+# it doesnt find all objects
   # model: efficientdet_lite4 
   # model_format: hub 
   # path_model: https://tfhub.dev/tensorflow/efficientdet/lite4/detection/1  # Uncomment first time
   # path_labels: data/coco-labels/coco-labels-paper.txt    
   # require_labels: True 
-   # #conf_thres: 0.5 
-  # #nms_thres: 0.5 
   # dtype: tf.uint8 
   # signatures:  
   # output_keys: 
@@ -98,43 +107,6 @@ acquisition:
   #   detection_classes: detection_classes # int
   #   #detection_class_entities:  # string
   #   num_detections: num_detections
-
-detection: 
-  model: yolov8 # yolov8, mobilenet_v2, yolov3, efficientdet_lite4
-  model_format: yolov8 # tflite, pb, hub, yolov8, yolov3_tf
-  # Path to the weights: 
-  path_model: models/yolov8n_float32_tflite/yolov8n_float32.tflite  # Uncomment first time
-  #cfg: cfg/yolov8.cfg # Path to the cfg
-  path_labels: data/coco-labels/coco-labels-paper.txt  # coco
-  require_labels: True # Require a label: object detection provides index, which must be converted to label
-  #conf_thres: 0.5 # Confidence threshold
-  #nms_thres: 0.5 # Non-maximum suppression threshold
-  dtype: tf.float32 # tf.float32, tf.uint8
-  signatures:  # input/output specifications (model def not available)
-  output_keys: 
-  #  detection_boxes: detection_boxes
-  #  detection_scores: detection_scores
-  #  detection_classes: detection_classes # int
-    #detection_class_entities:  # string
-  #  num_detections: num_detections
-  score_thres: 0.5 # Score threshold
-
-  classes_searched: 
-    - person # Classes to search
-    - 'Male person'
-    - 'Female person'
-    - "Child"
-    - "Woman"
-    - "Man" # IMAGENET
-    - "Person"
-    - "Human face"
-    - "Human hand"
-    - "Human head"
-    - "Animal"
-    - "Bird"
-    - "Dog" # COCO
-  num_frames_freq: 1 # Number of frames to skip between detections
-  task: detect
 
 # Checkpoints: Saving images and videos
 checkpoints:

@@ -40,7 +40,7 @@ def run_ai_surv(param):
     # Camera ID
     vid_id = param['acquisition']['cam_id']
 
-    # Model format
+    # Modelparamers
     model_format = param['detection']['model_format']
     path_model = param['detection']['path_model']
     dtype = param['detection']['dtype']
@@ -56,7 +56,6 @@ def run_ai_surv(param):
     if not os.path.exists(path_save):
         os.makedirs(path_save)
     path_save = os.path.join(path_save, f"{param['checkpoints']['name_save']}-{now}")
-
 
     # Load labels
     if param['detection']['require_labels'] is True:
@@ -111,7 +110,7 @@ def run_ai_surv(param):
         score_thres=param['detection']['score_thres']
         if (count_frames % num_frames_freq == 0):
             # Object detection
-            time_start = dt.now()
+            #time_start = dt.now()
             #if (c_i.MODE_DETECTION_OBJECT is True) and (count_frames % c_i.OBJECT_NUM_FRAMES == 0):            
             if model_format == 'yolov8':
                 result, classes_searched_positive = detection_object_yolov8(detector, frame, 
@@ -130,8 +129,8 @@ def run_ai_surv(param):
                                                                         path_save=path_save, dtype=dtype, 
                                                                         labels=labels)                
 
-            time = dt.now() - time_start
-            print(f"Detection time: {time.total_seconds():.2f} s")
+            #time = dt.now() - time_start
+            #print(f"Detection time: {time.total_seconds():.2f} s")
             if (param['display']['mode_display'] is True):
                 # CV_CAP_PROP_POS_MSEC Current position of the video file in milliseconds.
                 # CV_CAP_PROP_POS_FRAMES

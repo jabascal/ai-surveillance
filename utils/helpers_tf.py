@@ -71,28 +71,64 @@ def detection_object_list_tf_hub(detector, frame, count_frames, classes_searched
 
     # Classes detected with high score
     # Check if decode is necessary
-    classes_positive = [class_ent for class_ent, score in zip(detection_class_entities, detection_scores) if score >= score_thres]  
+    results_positive = [(class_ent, score, box) for class_ent, score, box in zip(detection_class_entities, detection_scores, boxes) if ((score >= score_thres) and (class_ent in classes_searched))]  
+
+    #classes_positive = [class_ent for class_ent, score in zip(detection_class_entities, detection_scores) if score >= score_thres]  
 
     # Classes detected within classes searched
-    classes_positive = [class_label for class_label in classes_positive if class_label in classes_searched]
+    #classes_positive = [class_label for class_label in classes_positive if class_label in classes_searched]
 
-    if classes_positive and path_save is not None:        
-        # Display image
-        try:
-            image_with_boxes = draw_boxes(               
-                frame, 
-                boxes,
-                detection_class_entities,               
-                detection_scores,               
-                max_boxes=5, 
-                min_score=0.1)    
-        except:
-            image_with_boxes = frame
-        display_image(image_with_boxes, "Classes detected")
 
-        cv.imwrite(f"{path_save}_objDet_fr{count_frames}.png", 
-                   image_with_boxes) 
-    return result, classes_positive
+    if results_positive:
+        classes_positive = [class_ent for class_ent, score, box in results_positive]  
+        boxes_positive = [box for class_ent, score, box in results_positive]  
+        scores_positive = [score for class_ent, score, box in results_positive]
+
+        path_frame = f"{path_save}_objDet_fr{count_frames}.png"
+        image_with_boxes = draw_bounding_boxes_cv(frame, boxes_positive, scores_positive, classes_positive, path_frame)       
+
+    return result, results_positive    
+
+def draw_bounding_boxes_cv(img, boxes, scores, classes, path_save=None):
+   # Define font for text in image
+    font = cv.FONT_HERSHEY_SCRIPT_COMPLEX
+    font_scale = 0.5
+    font_thickness = 1
+    #img_shape = img.shape
+    #img_shapes = 2*[img_shape[0]/2] + 2*[img_shape[1]/2] 
+    img_height, img_width, _ = img.shape
+    if boxes[0].max() <= 1:
+        box_size_mode = 'proportion' # 'pixels' or 'proportion'
+    else:
+        box_size_mode = 'pixels' # 'pixels' or 'proportion'
+
+    # Draw bounding boxes and write label and score
+    for box, score, cls in zip(boxes, scores, classes):
+
+        # Convert box coordinates to integers
+        if box_size_mode == 'proportion':
+            box_pixels = [int(box[1] * img_width), int(box[0] * img_height), int(box[3] * img_width), int(box[2] * img_height)]
+        else:
+            box_pixels = [int(coord) for coord in box]
+        #box = [int(coord*img_shapes[ind]) for ind, coord in enumerate(box)]
+
+        # Draw box
+        #cv.rectangle(img, (box[0], box[1]), (box[2], box[3]), (0, 255, 0), 2)
+        cv.rectangle(img, (box_pixels[0], box_pixels[1]), (box_pixels[2], box_pixels[3]), (0, 255, 0), 2)
+
+        # Write label and score
+        label = f'{cls}: {score:.2f}'
+        label_size, _ = cv.getTextSize(label, font, font_scale, font_thickness)
+        label_x = box_pixels[0]
+        label_y = box_pixels[1] - label_size[1]
+        cv.rectangle(img, (label_x, label_y), (label_x + label_size[0], label_y + label_size[1]), (0, 255, 0), cv.FILLED)
+        cv.putText(img, label, (label_x, label_y + label_size[1]), font, font_scale, (0, 0, 0), font_thickness)
+    # Display image
+    cv.imshow('image', img)
+    if path_save is not None:
+        cv.imwrite(path_save, img)  
+    cv.waitKey(20)
+    return img
 
 def draw_bounding_box_on_image(image,
                                ymin,
@@ -176,3 +212,24 @@ def draw_boxes(image, boxes, class_names, scores, max_boxes=10, min_score=0.1):
 def display_image(image, fig_name):   
    cv.imshow(fig_name,image)   
    k = cv.waitKey(20)
+
+
+"""    if classes_positive and path_save is not None:        
+        cv.imshow('Classes detected',frame)   
+        k = cv.waitKey(20)
+
+        # Display image
+        try:
+            image_with_boxes = draw_boxes(               
+                frame, 
+                boxes,
+                detection_class_entities,               
+                detection_scores,               
+                max_boxes=5, 
+                min_score=0.1)    
+        except:
+            image_with_boxes = frame
+        display_image(image_with_boxes, "Classes detected")
+
+        cv.imwrite(f"{path_save}_objDet_fr{count_frames}.png", 
+                   image_with_boxes) """        

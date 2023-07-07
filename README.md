@@ -8,13 +8,13 @@ It uses opencv-python to capture images and for display.
 
 Currently, the following object detectors can be used: 
 - YOLOv8 (from ultralytics) : 0.3s/frame 
-- YOLOv3 (keras model, obtained online) : 5s/frame
 - MobiletNetv2 (tf hub) : 0.1-0.2s/frame
 - EfficientDet-Lite4 (tf hub) : 0.3-0.4s/frame
+- YOLOv3 (keras model, obtained online) : 5s/frame
+
+Best models are MobiletNetv2 and YOLOv8
 
 (Note: detection times for a frame of (480, 640, 3) and effective times, including visualization and writing positive results.)
-
-Detection boxes, curretly, only shown for yolov8. 
 
 ## Installation
 
