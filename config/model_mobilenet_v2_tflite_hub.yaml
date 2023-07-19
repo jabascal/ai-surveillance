@@ -1,0 +1,29 @@
+# MobileNetv2_tflite:  Not working
+# https://tfhub.dev/iree/lite-model/ssd_mobilenet_v2_100/int8/default/1
+# Mobilenet V2 with SSDLite head trained on COCO 2017, in int8. 
+# Inputs: Works with dynamic width and height. Achieves 21.2% mAP on COCO 2017 at 320x320 input.
+# normalized_input_image_tensor: an int array of shape [batch, height, width, channels] 
+# where batch = 1, channels = 3, and height and width can be any size. 
+# Values should be between [-128, 127].
+# 
+# Outputs:
+# Box predictor: [batch, height, width, box_encoding * num_anchors], 
+# where batch=1, height and width vary depending on the size of the feature map, 
+# box_encoding are the box coordinates at [y_center, x_center, box_height, box_width] 
+# and num_anchors is the number of anchors as defined in the anchor configuration.
+# Class predictor: [batch, height, width, num_classes * num_anchors], 
+# where batch=1, height and width vary depending on the size of the feature map, num_classes is 91 
+# (including background class), num_anchors is the number of anchors as defined in the anchor configuration.
+model: mobilenet_v2_iree_tflite 
+model_format: tflite # tflite, tflite_interp 
+path_model: ./models/mobilenet_v2_lite_int8/lite-model_ssd_mobilenet_v2_100_int8_default_1.tflite
+path_labels: data/coco-labels/coco-labels-paper.txt    
+require_labels: False 
+dtype: tf.int8 
+signatures:  
+output_keys: 
+  detection_boxes: detection_boxes
+  detection_scores: detection_scores
+  detection_classes: detection_class_labels # int
+  detection_class_entities: detection_class_entities # string
+  num_detections: 

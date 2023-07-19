@@ -1,0 +1,15 @@
+# mobilenet_v2:
+#   0.1-0.2s per frame
+model: mobilenet_v2 
+model_format: hub 
+path_model: https://tfhub.dev/google/openimages_v4/ssd/mobilenet_v2/1  
+path_labels: data/coco-labels/coco-labels-paper.txt    
+require_labels: False 
+dtype: tf.float32 
+signatures: default 
+output_keys: 
+  detection_boxes: detection_boxes
+  detection_scores: detection_scores
+  detection_classes: detection_class_labels # int
+  detection_class_entities: detection_class_entities # string
+  num_detections: 

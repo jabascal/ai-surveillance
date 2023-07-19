@@ -1,0 +1,11 @@
+# yolov8
+
+model: yolov8 
+model_format: yolov8 
+path_model: models/yolov8n_float32_tflite/yolov8n_float32.tflite  
+path_labels: data/coco-labels/coco-labels-paper.txt  
+require_labels: True 
+dtype: tf.float32 
+signatures:  
+output_keys: 
+score_thres: 0.5 

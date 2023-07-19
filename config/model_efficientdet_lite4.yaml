@@ -1,0 +1,16 @@
+# efficientdet_lite4:
+# 0.3-0.4s
+# it doesnt find all objects
+model: efficientdet_lite4 
+model_format: hub 
+path_model: https://tfhub.dev/tensorflow/efficientdet/lite4/detection/1  # Uncomment first time
+path_labels: data/coco-labels/coco-labels-paper.txt    
+require_labels: True 
+dtype: tf.uint8 
+signatures:  
+output_keys: 
+  detection_boxes: detection_boxes
+  detection_scores: detection_scores
+  detection_classes: detection_classes # int
+  #detection_class_entities:  # string
+  num_detections: num_detections

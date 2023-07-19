@@ -38,75 +38,10 @@ detection:
     - "Dog" # COCO
   num_frames_freq: 15 # Number of frames to skip between detections (reduce processing + writting output)
   task: detect
-
-# Uncomment to choose model configuration!
-
-# Default model:
-# yolov8
-  # model: yolov8 
-  # model_format: yolov8 
-  # path_model: models/yolov8n_float32_tflite/yolov8n_float32.tflite  
-  # path_labels: data/coco-labels/coco-labels-paper.txt  
-  # require_labels: True 
-  # dtype: tf.float32 
-  # signatures:  
-  # output_keys: 
-  # score_thres: 0.5 
-
-# yolov3_tf:
-  # model: yolov3 
-  # model_format: yolov3_tf 
-  # path_model: models/yolov3_tf/yolov3.weights  
-  # path_labels:  # openimages_v4 (80 classes)
-  # require_labels: False 
-  # #conf_thres: 0.5 
-  # #nms_thres: 0.5 
-  # dtype: tf.float32 
-  # signatures: 
-  # output_keys: 
-  # score_thres: 0.4 
-
-# yolov8 (Default model):
-#   model: yolov8 
-#   model_format: yolov8
-#   path_model: models/yolov8n_float32_tflite/yolov8n_float32.tflite, models/yolov8n_saved_model
-#   path_labels:  data/coco-labels/coco-labels-paper.txt 
-#   score_thres: 0.5
-#   require_labels: False
-#   dtype: tf.float32
-
-# mobilenet_v2:
-#   0.1-0.2s per frame
-  model: mobilenet_v2 
-  model_format: hub 
-  path_model: https://tfhub.dev/google/openimages_v4/ssd/mobilenet_v2/1  
-  path_labels: data/coco-labels/coco-labels-paper.txt    
-  require_labels: False 
-  dtype: tf.float32 
-  signatures: default 
-  output_keys: 
-    detection_boxes: detection_boxes
-    detection_scores: detection_scores
-    detection_classes: detection_class_labels # int
-    detection_class_entities: detection_class_entities # string
-    num_detections: 
-
-# efficientdet_lite4:
-# 0.3-0.4s
-# it doesnt find all objects
-  # model: efficientdet_lite4 
-  # model_format: hub 
-  # path_model: https://tfhub.dev/tensorflow/efficientdet/lite4/detection/1  # Uncomment first time
-  # path_labels: data/coco-labels/coco-labels-paper.txt    
-  # require_labels: True 
-  # dtype: tf.uint8 
-  # signatures:  
-  # output_keys: 
-  #   detection_boxes: detection_boxes
-  #   detection_scores: detection_scores
-  #   detection_classes: detection_classes # int
-  #   #detection_class_entities:  # string
-  #   num_detections: num_detections
+  # Parameters model
+  # model_mobilenet_v2_hub.yaml 
+  # model_yolov8.yaml
+  model: !include model_efficientdet_lite4.yaml # model_yolov8.yaml
 
 # Checkpoints: Saving images and videos
 checkpoints:
