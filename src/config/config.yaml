@@ -41,7 +41,7 @@ detection:
   # Parameters model
   # model_mobilenet_v2_hub.yaml 
   # model_yolov8.yaml
-  model: !include model_efficientdet_lite4.yaml # model_yolov8.yaml
+  model: !include model_mobilenet_v2_hub.yaml 
 
 # Checkpoints: Saving images and videos
 checkpoints:

@@ -34,7 +34,7 @@ Install ultralytics and other requirements. In Linux:
     python -m venv yolov8
     source venv/yolov8/bin/activate
     pip install ultralytics
-    pip install -r requirements.txt
+    pip install -r requirements_yolov8.txt
 ```
 
 ### For tf object detection
@@ -47,11 +47,13 @@ For mobilenet_v2, EfficientDet, YOLOv3
     cd venv
     python -m venv tf
     source venv/tf/bin/activate
-    pip install -r requirements_tf.txt
+    pip install -r requirements.txt
 ```
 
 ## Usage with docker
-Docker image for YOLOv8 detector built from Ultralytics Image.
+Current Docker image *juanabascal/ai-surveillance:latest* (2.5 GB) 
+works with *MobiletNetv2*. Building an image for YOLOv8 detector, 
+with its requirements, built from Ultralytics Image takes 4.3 GB.
 
 With Docker installed: 
 

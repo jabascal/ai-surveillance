@@ -17,6 +17,9 @@ from utils.helpers_acquisition import (capture_image_prep, init_video,
 from utils.helpers_analysis import display_image as display_image_cv
 from utils.helpers_inout import load_config
 
+# Working directory
+print(f"Working directory: {os.getcwd()}")
+
 # Import YAML parameters from config/config.yaml
 config_file = "config/config.yaml"
 
@@ -66,6 +69,9 @@ def run_ai_surv(param):
     path_save = os.path.join(param['checkpoints']['path_save_images'], now)
     if not os.path.exists(path_save):
         os.makedirs(path_save)
+        print(f"Create folder for saving images {path_save}")
+    else:
+        print(f"Folder for saving images {path_save} already exists")
     path_save = os.path.join(path_save, f"{param['checkpoints']['name_save']}-{now}")
 
     # Load labels

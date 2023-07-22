@@ -4,7 +4,7 @@
 model: efficientdet_lite4 
 model_format: hub 
 path_model: https://tfhub.dev/tensorflow/efficientdet/lite4/detection/1  # Uncomment first time
-path_labels: data/coco-labels/coco-labels-paper.txt    
+path_labels: ../data/coco-labels/coco-labels-paper.txt    
 require_labels: True 
 dtype: tf.uint8 
 signatures:  

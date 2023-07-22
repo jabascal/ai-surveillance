@@ -16,8 +16,8 @@
 # (including background class), num_anchors is the number of anchors as defined in the anchor configuration.
 model: mobilenet_v2_iree_tflite 
 model_format: tflite # tflite, tflite_interp 
-path_model: ./models/mobilenet_v2_lite_int8/lite-model_ssd_mobilenet_v2_100_int8_default_1.tflite
-path_labels: data/coco-labels/coco-labels-paper.txt    
+path_model: ../models/mobilenet_v2_lite_int8/lite-model_ssd_mobilenet_v2_100_int8_default_1.tflite
+path_labels: ../data/coco-labels/coco-labels-paper.txt    
 require_labels: False 
 dtype: tf.int8 
 signatures:  
