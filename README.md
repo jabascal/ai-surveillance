@@ -55,11 +55,11 @@ Current Docker image *juanabascal/ai-surveillance:latest* (2.5 GB)
 works with *MobiletNetv2*. Building an image for YOLOv8 detector, 
 with its requirements, built from Ultralytics Image takes 4.3 GB.
 
-With Docker installed: 
+With Docker installed (you may need to add sudo when running): 
 
 ```
     chmod +x runDocker.sh
-    ./runDocker.sh
+    sudo ./runDocker.sh
 ```
 and then on the instance
 ```
@@ -69,8 +69,9 @@ and then on the instance
 To recover the results from the docker volume */var/lib/docker/volumes/surveillance/_data/*, from the host run:
 ```
     chmod +x runCopyResults.sh
-    ./runCopyResults.sh
+    sudo ./runCopyResults.sh USER_NAME
 ```
+*USER_NAME* is optional
 
 ## Results
 Detection on selected frames:
