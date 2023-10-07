@@ -7,6 +7,17 @@ XSOCK=/tmp/.X11-unix
 XAUTH=/tmp/.docker.xauth
 xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
 
-# Run IMAGE surveillance
-docker run -m 8GB -it --rm -e DISPLAY=$DISPLAY -v $XSOCK:$XSOCK -v $XAUTH:$XAUTH -e XAUTHORITY=$XAUTH -v surveillance:/usr/src/app/results --device=/dev/video0:/dev/video0 -it juanabascal/ai-surveillance:latest
+# Run IMAGE surveillance with the following settings:
+# -m 8GB: 8GB of RAM
+# -it: interactive mode
+# --rm: remove container after exit
+# -e DISPLAY=$DISPLAY: set DISPLAY environment variable
+# -v $XSOCK:$XSOCK: mount XSOCK
+# -v $XAUTH:$XAUTH: mount XAUTH
+# -e XAUTHORITY=$XAUTH: set XAUTHORITY environment variable
+# -v surveillance:/usr/src/app/src/results/: mount volume surveillance
+# --device=/dev/video0:/dev/video0: mount host camera
+# -v /etc/localtime:/etc/localtime:ro: mount host time
+# -it juanabascal/ai-surveillance:latest: run IMAGE juanabascal/ai-surveillance:latest
+docker run -m 8GB -it --rm -e DISPLAY=$DISPLAY -v $XSOCK:$XSOCK -v $XAUTH:$XAUTH -e XAUTHORITY=$XAUTH -v surveillance:/usr/src/app/src/results/ -v /etc/localtime:/etc/localtime:ro --device=/dev/video0:/dev/video0 -it juanabascal/ai-surveillance:mobnetv2
 xhost -local:docker
