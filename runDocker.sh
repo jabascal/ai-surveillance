@@ -19,5 +19,7 @@ xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
 # --device=/dev/video0:/dev/video0: mount host camera
 # -v /etc/localtime:/etc/localtime:ro: mount host time
 # -it juanabascal/ai-surveillance:latest: run IMAGE juanabascal/ai-surveillance:latest
-docker run -m 8GB -it --rm -e DISPLAY=$DISPLAY -v $XSOCK:$XSOCK -v $XAUTH:$XAUTH -e XAUTHORITY=$XAUTH -v surveillance:/usr/src/app/src/results/ -v /etc/localtime:/etc/localtime:ro --device=/dev/video0:/dev/video0 -it juanabascal/ai-surveillance:mobnetv2
+# -p 587:587: expose port 587 to send emails
+# -v $(pwd)/../mailtrap:/usr/src/mailtrap: mount mailtrap config file (token, ...)
+docker run -m 8GB -it --rm -p 587 -e DISPLAY=$DISPLAY -v $(pwd)/../mailtrap:/usr/src/mailtrap -v $XSOCK:$XSOCK -v $XAUTH:$XAUTH -e XAUTHORITY=$XAUTH -v surveillance:/usr/src/app/src/results/ -v /etc/localtime:/etc/localtime:ro --device=/dev/video0:/dev/video0 -it juanabascal/ai-surveillance:mobnetv2
 xhost -local:docker

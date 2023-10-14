@@ -7,6 +7,7 @@
 
 import os
 from datetime import datetime as dt
+from datetime import timedelta
 
 #import pandas as pd
 import cv2 as cv
@@ -16,17 +17,25 @@ from utils.helpers_acquisition import (capture_image_prep, init_video,
                                        read_labels, stop_video)
 from utils.helpers_analysis import display_image as display_image_cv
 from utils.helpers_inout import load_config
+from utils.helpers_mail import send_mail_with_image, read_token_yaml, print_classes_found
 
+# -----------------------------------------------------------
 # Working directory
 print(f"Working directory: {os.getcwd()}")
-
+# -----------------------------------------------------------
 # Import YAML parameters from config/config.yaml
 config_file = "config/config.yaml"
 
 # Load config file 
 param = load_config(config_file)
 model_format = param['detection']['model']['model_format']
-
+# -----------------------------------------------------------
+# Send mail 
+if param['mail']['mode_mail'] is True:
+    # Read token from yaml file
+    mt_config = read_token_yaml(param['mail']['path_config'])
+# -----------------------------------------------------------
+# Model format
 if model_format == 'yolov8':
     from utils.helpers_yolov8 import detection_object_yolov8, model_load_yolov8
 elif model_format == 'hub':
@@ -40,8 +49,11 @@ elif model_format == 'yolov3_tf':
                                          make_yolov3_model)
 elif model_format == 'tflite':
     from utils.helpers_tflite import detection_object_tflite, model_load_tflite
+# -----------------------------------------------------------
+
 
 def run_ai_surv(param):
+    # -----------------------------------------------------------
     # Camera ID
     vid_id = param['acquisition']['cam_id']
 
@@ -63,7 +75,7 @@ def run_ai_surv(param):
 
     # Classes to detect: Raise detection if class found with any probability
     classes_searched = param['detection']['classes_searched']
-
+    # -----------------------------------------------------------
     # Path save images
     now = dt.now().strftime("%Y%m%d-%H%M")
     path_save = os.path.join(param['checkpoints']['path_save_images'], now)
@@ -73,7 +85,7 @@ def run_ai_surv(param):
     else:
         print(f"Folder for saving images {path_save} already exists")
     path_save = os.path.join(path_save, f"{param['checkpoints']['name_save']}-{now}")
-
+    # -----------------------------------------------------------
     # Load labels
     if require_labels is True:
        labels = read_labels(path_labels)
@@ -99,6 +111,10 @@ def run_ai_surv(param):
         weight_reader.load_weights(detector)
     elif model_format == 'tflite':
         detector = model_load_tflite(path_model, model_format)
+    # -----------------------------------------------------------
+    # Initialize time sent last mail and add five minutes    
+    time_sent_mail = dt.now() - timedelta(minutes=param['mail']['time_start'])
+    num_sent_mail = 0
 
     # Init camera acquire
     cam, vid_dim, fps = init_video(vid_id=vid_id)
@@ -111,7 +127,8 @@ def run_ai_surv(param):
     cv.imshow('Capturing', frame)
     k = cv.waitKey(20)
     print(f"Init camera {vid_id} with frames {width}x{height}, fps={int(fps)}\n")
-
+    # -----------------------------------------------------------
+    # -----------------------------------------------------------
     # Acquire frames
     count_frames = 0
     while(cam.isOpened()):    
@@ -120,13 +137,24 @@ def run_ai_surv(param):
             print("Frame not acquired!!!")
 
         count_frames += 1 
-
+        # -----------------------------------------------------------
         # -----------------------------------------------------------
         # OBJECT DETECTION
         #frame = cv.imread("images/photo.jpg")
         num_frames_freq = param['detection']['num_frames_freq']
         score_thres=param['detection']['score_thres']
         if (count_frames % num_frames_freq == 0):
+            # -----------------------------------------------------------
+            # Display frame
+            #time = dt.now() - time_start
+            #print(f"Detection time: {time.total_seconds():.2f} s")
+            if (param['display']['mode_display'] is True):
+                # CV_CAP_PROP_POS_MSEC Current position of the video file in milliseconds.
+                # CV_CAP_PROP_POS_FRAMES
+                # print(f"Read {count_frames} frames ({count_frames//(60*fps)} min)")     
+                display_image_cv(frame, 'Capturing')
+                k = cv.waitKey(20)
+            # -----------------------------------------------------------
             # Object detection
             #time_start = dt.now()
             #if (c_i.MODE_DETECTION_OBJECT is True) and (count_frames % c_i.OBJECT_NUM_FRAMES == 0):            
@@ -141,7 +169,7 @@ def run_ai_surv(param):
                                                                         score_thres=score_thres, 
                                                                         path_save=path_save)           
             elif model_format == 'hub'or model_format == 'pb':
-                result, classes_searched_positive = detection_object_list_tf_hub(detector, frame, 
+                result, classes_searched_positive, path_image_detected = detection_object_list_tf_hub(detector, frame, 
                                                                         count_frames, classes_searched, output_keys,
                                                                         score_thres=score_thres, 
                                                                         path_save=path_save, dtype=dtype, 
@@ -151,16 +179,33 @@ def run_ai_surv(param):
                                                                         count_frames, classes_searched)#, 
                                                                         #score_thres=score_thres, 
                                                                         #path_save=path_save, dtype=dtype, 
-                                                                        #labels=labels)              
-
-            #time = dt.now() - time_start
-            #print(f"Detection time: {time.total_seconds():.2f} s")
-            if (param['display']['mode_display'] is True):
-                # CV_CAP_PROP_POS_MSEC Current position of the video file in milliseconds.
-                # CV_CAP_PROP_POS_FRAMES
-                # print(f"Read {count_frames} frames ({count_frames//(60*fps)} min)")     
-                display_image_cv(frame, 'Capturing')
-                k = cv.waitKey(20)
+                                                                        #labels=labels)  
+            # -----------------------------------------------------------
+            # -----------------------------------------------------------
+            # Take action if object detected
+            if classes_searched_positive:
+                print(f"Object detected: {classes_searched_positive}")
+                # -----------------------------------------------------------
+                # Send mail with image 
+                if param['mail']['mode_mail'] is True:
+                    if path_image_detected:
+                        image = path_image_detected
+                    
+                    # Send mail if not mail sent in the last minute and less than 10 mails sent
+                    time_send_interval = (dt.now() - time_sent_mail).total_seconds() > param['mail']['time_interval']*60
+                    if time_send_interval and (num_sent_mail < param['mail']['num_stop']):
+                        time_sent_mail = dt.now()
+                        print(f"Send mail with image at {time_sent_mail}")
+                    
+                        # Format detection results
+                        mail_text = print_classes_found(classes_searched_positive)
+                        send_mail_with_image(mt_config=mt_config, 
+                                        receiver=param['mail']['receiver'], 
+                                        subject=param['mail']['subject'], 
+                                        name=param['mail']['name'],
+                                        text=mail_text,
+                                        path_image=path_image_detected)
+                        num_sent_mail =+ 1
                 
     stop_video(cam) 
 

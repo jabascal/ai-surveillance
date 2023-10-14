@@ -56,3 +56,15 @@ checkpoints:
 # Display: Displaying images and videos
 display:
   mode_display: True # Display images and videos
+
+# Mail: Sending emails
+mail: 
+  mode_mail: False # Send emails if detection
+  receiver: # receiver@googlemail.com
+  subject: AI-surv detection
+  name: AI-Surv
+  server: mailtrap
+  path_config: ../../mailtrap/mailtrap.yaml # Path to the mailtrap token/password, username and port
+  time_start: 3 # Time to start sending emails in minutes
+  time_interval: 1 # Time interval to send emails in minutes
+  num_stop: 10 # Number of emails to send

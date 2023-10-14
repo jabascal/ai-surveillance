@@ -3,6 +3,7 @@ Surveillance tool that runs an object detector model
 in order to take actions. 
 Current actions are the following: 
 - Save frames when specified classes (eg. "person", "dog") are detected with high score
+- (optional) Send email with the detected frame, every period of time, using mailtrap and a private domain
 
 It uses opencv-python to capture images and for display. 
 
@@ -48,6 +49,12 @@ For mobilenet_v2, EfficientDet, YOLOv3
     python -m venv tf
     source venv/tf/bin/activate
     pip install -r requirements.txt
+```
+
+## Usage
+```
+cd src
+python run_cam_surveillance.py
 ```
 
 ## Usage with docker

@@ -86,8 +86,10 @@ def detection_object_list_tf_hub(detector, frame, count_frames, classes_searched
 
         path_frame = f"{path_save}_objDet_fr{count_frames}.png"
         image_with_boxes = draw_bounding_boxes_cv(frame, boxes_positive, scores_positive, classes_positive, path_frame)       
+    else:
+        path_frame = None
 
-    return result, results_positive    
+    return result, results_positive, path_frame    
 
 def draw_bounding_boxes_cv(img, boxes, scores, classes, path_save=None):
    # Define font for text in image
